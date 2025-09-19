@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator GCD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* General Styling - IMPROVED COLORS */
+        :root {
+            --bg-color-1: #c3e8f0;
+            --bg-color-2: #a2d2ff;
+            --bg-color-3: #ffafcc;
+            --card-bg: rgba(255, 255, 255, 0.35); /* Made card less transparent */
+            --text-color: #0b2349; /* Dark text for high contrast */
+            --text-light: #f0f8ff; /* Light text for header/button */
+            --accent-color: #b388eb; /* A nice purple accent */
+            --accent-dark: #4a235a;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, var(--bg-color-1), var(--bg-color-2), var(--bg-color-3), #a8e6cf);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-color); /* Default text is now dark */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Container and Header */
+        .container {
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            color: var(--text-light); /* Make header text light to stand out on BG */
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            text-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .identity {
+            font-size: 1.1rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        /* Glassmorphism Card Style */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px 0 var(--shadow-color);
+            padding: 2rem;
+            margin-top: 1rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Form Styling */
+        .input-card form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600; /* Bolder label */
+            color: var(--accent-dark);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            border: 1px solid transparent; /* Cleaner look */
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--text-color); /* Dark text for input */
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(11, 35, 73, 0.5); /* Darker placeholder */
+        }
+
+        .input-group input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(179, 136, 235, 0.7);
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            border: none;
+            background-color: var(--accent-color);
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            background-color: #c4a3f3;
+        }
+
+        /* Results Section */
+        .hidden {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        #results-section {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        .output-card {
+            text-align: left;
+        }
+
+        .output-card h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-dark);
+        }
+
+        #final-result {
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+            color: var(--accent-dark);
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        #linear-combination {
+            font-size: 1.2rem;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 0.5rem;
+        }
+
+        .steps-container h3 {
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        #steps-output p {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            word-wrap: break-word;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Kalkulator GCD Algoritma Euclid</h1>
+            <p class="identity">Ishlahrahmi Meishrin | 140110220033</p>
+        </header>
+
+        <main>
+            <div class="card input-card">
+                <form id="gcd-form">
+                    <div class="input-group">
+                        <label for="num1">Bilangan Pertama</label>
+                        <input type="number" id="num1" name="num1" placeholder="Masukkan bilangan bulat positif" required min="1">
+                    </div>
+                    <div class="input-group">
+                        <label for="num2">Bilangan Kedua</label>
+                        <input type="number" id="num2" name="num2" placeholder="Masukkan bilangan bulat positif" required min="1">
+                    </div>
+                    <button type="submit">Hitung GCD</button>
+                </form>
+            </div>
+
+            <section id="results-section" class="hidden">
+                <div class="card output-card">
+                    <h2>Hasil Perhitungan</h2>
+                    <div id="final-result"></div>
+                    <div id="linear-combination"></div> <div class="steps-container">
+                        <h3>Langkah-langkah Algoritma Euclid:</h3>
+                        <div id="steps-output"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('gcd-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // 1. Ambil nilai input
+            const num1 = parseInt(document.getElementById('num1').value);
+            const num2 = parseInt(document.getElementById('num2').value);
+
+            // 2. Validasi input
+            if (isNaN(num1) || isNaN(num2) || num1 <= 0 || num2 <= 0) {
+                alert("Mohon masukkan dua bilangan bulat positif.");
+                return;
+            }
+
+            // 3. Jalankan Algoritma dan tampilkan hasil
+            const { gcd, steps, x, y } = extendedEuclideanAlgorithm(num1, num2);
+            
+            displayResults(num1, num2, gcd, steps, x, y);
+        });
+
+        /**
+         * Fungsi untuk menghitung GCD menggunakan Extended Euclidean Algorithm
+         * Ini akan menghasilkan GCD, langkah-langkah, dan koefisien x, y
+         * untuk persamaan linear: ax + by = gcd(a, b)
+         */
+        function extendedEuclideanAlgorithm(a, b) {
+            let steps = [];
+            let x = 0, y = 1, lastX = 1, lastY = 0;
+            let temp;
+
+            let originalA = a;
+            let originalB = b;
+
+            while (b !== 0) {
+                let quotient = Math.floor(a / b);
+                let remainder = a % b;
+
+                steps.push(`${a} = ${quotient} * ${b} + ${remainder}`);
+
+                // Update a dan b
+                temp = b;
+                b = remainder;
+                a = temp;
+                
+                // Update koefisien x dan y
+                temp = x;
+                x = lastX - quotient * x;
+                lastX = temp;
+
+                temp = y;
+                y = lastY - quotient * y;
+                lastY = temp;
+            }
+
+            // gcd adalah nilai 'a' terakhir yang tidak nol
+            const gcd = a;
+            
+            // Koefisien yang benar adalah lastX dan lastY
+            return { gcd, steps, x: lastX, y: lastY };
+        }
+
+
+        /**
+         * Fungsi untuk menampilkan hasil ke halaman web
+         */
+        function displayResults(a, b, gcd, steps, x, y) {
+            const resultsSection = document.getElementById('results-section');
+            const finalResultEl = document.getElementById('final-result');
+            const linearCombinationEl = document.getElementById('linear-combination');
+            const stepsOutputEl = document.getElementById('steps-output');
+
+            // Kosongkan hasil sebelumnya
+            stepsOutputEl.innerHTML = '';
+
+            // Tampilkan hasil akhir
+            finalResultEl.innerHTML = `GCD(${a}, ${b}) = <strong>${gcd}</strong>`;
+            
+            // Tampilkan persamaan kombinasi linear
+            linearCombinationEl.innerHTML = `Kombinasi Linear: <strong>${gcd} = (${x}) &times; ${a} + (${y}) &times; ${b}</strong>`;
+
+            // Tampilkan langkah-langkah
+            steps.forEach(step => {
+                const p = document.createElement('p');
+                p.textContent = step;
+                stepsOutputEl.appendChild(p);
+            });
+
+            // Tampilkan container hasil dengan animasi fade-in
+            resultsSection.classList.remove('hidden');
+            // Memicu reflow agar transisi berjalan
+            void resultsSection.offsetWidth; 
+            resultsSection.style.opacity = 1;
+            resultsSection.style.transform = 'translateY(0)';
+        }
+    </script>
+</body>
+</html>
